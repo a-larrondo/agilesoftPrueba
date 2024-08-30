@@ -1,4 +1,4 @@
-package cl.Agilesoft.prueba.repository;
+package cl.Agilesoft.prueba.persistence.repository;
 
 import java.io.Serializable;
 
