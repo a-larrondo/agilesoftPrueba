@@ -2,43 +2,65 @@ package cl.Agilesoft.prueba.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.hibernate.annotations.Comments;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import cl.Agilesoft.prueba.persistence.model.User;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 public class JwtUtil {
 
-	private String KEY = "Agilesoft";
+	@Value("${spring.jwt.secretkey}")
+	private String secretK;
+
+	@Value("${spring.jwt.plusHourExpiration}")
+	private Integer hoursRemains;
 
 	public String generateToken(String user) {
+		return createToken(user);
+	}
 
-		Map<String, Object> claims = new HashMap<>();
-		claims.put("rol", "user");
+	private String createToken(String user) {
 
-		return createToken(claims, user);
+		SecretKey secretKey = new SecretKeySpec(encodeBase64(secretK), "HmacSHA512");
+
+		return Jwts.builder().subject(user).issuedAt(new Date()).expiration(expDate()).signWith(secretKey).compact();
 
 	}
 
-	private String createToken(Map<String, Object> claims, String user) {
+	public Claims extractClaims(String token) {
 
-		return Jwts.builder().setClaims(claims).setSubject(user).setIssuedAt(new Date())
-				.setExpiration(expDateInHours(2)).signWith(SignatureAlgorithm.NONE, KEY).compact();
+		SecretKey secretKey = new SecretKeySpec(encodeBase64(secretK), "HmacSHA512"); // Jwts.SIG.HS256
+		Claims claims = Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
 
+//		if (claims.getExpiration().before(new Date())) {
+//			throw new JwtException("El token ha expirado.");
+//		}
+
+		return claims;
 	}
 
-	private Date expDateInHours(Integer hoursRemains) {
+	private Date expDate() {
 
 		LocalDateTime expDate = LocalDateTime.now().plusHours(hoursRemains);
 
 		return Date.from(expDate.atZone(ZoneId.systemDefault()).toInstant());
+	}
+
+	private byte[] encodeBase64(String data) {
+		return Base64.getEncoder().encode(data.getBytes());
+	}
+
+	private byte[] decodeBase64(String data) {
+		return Base64.getDecoder().decode(data);
 	}
 
 }
