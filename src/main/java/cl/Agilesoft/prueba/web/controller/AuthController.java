@@ -31,11 +31,6 @@ public class AuthController {
 	@Autowired
 	private JwtUtil jwtUtil;
 
-	@GetMapping("/greet")
-	public String greetings() {
-		return "hola mundo";
-	}
-
 	@PostMapping("/login")
 	@ResponseBody
 	public ResponseEntity<String> validateUser(@RequestBody User user) {
