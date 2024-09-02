@@ -32,9 +32,9 @@ public class TaskService {
 		return taskRepo.findAllTasksByUsername(userName);
 	}
 
-	public Optional<Task> findById(Long id) {
-
-		return taskRepo.findById(id);
+	public Optional<Task> findByIdName(Long id, String userName) {
+		
+		return taskRepo.findByIdAndName(id,userName);
 	}
 
 }

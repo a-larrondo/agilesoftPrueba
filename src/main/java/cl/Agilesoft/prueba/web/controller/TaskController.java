@@ -97,10 +97,7 @@ public class TaskController {
 	public ResponseEntity<?> updateStatus(@RequestHeader("Authorization") String authorizationHeader,
 			@PathVariable("id") Long id) {
 		try {
-			Optional<Task> taskToUpdate = taskService.findById(id);
-			if (taskToUpdate.isEmpty()) {
-				return new ResponseEntity<>("No existe tarea con el id enviado.", HttpStatus.BAD_REQUEST);
-			}
+
 			if (authorizationHeader.length() < 10) {
 				return new ResponseEntity<>("Debe enviar el token.", HttpStatus.UNAUTHORIZED);
 			}
@@ -113,6 +110,10 @@ public class TaskController {
 				return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED);
 			}
 
+			Optional<Task> taskToUpdate = taskService.findByIdName(id, user.get().getUsername());
+			if (taskToUpdate.isEmpty()) {
+				return new ResponseEntity<>("No existe tarea con el id enviado.", HttpStatus.BAD_REQUEST);
+			}
 			taskToUpdate.get().setIsComplete(true);
 
 			Task createdTask = taskService.save(taskToUpdate.get());
@@ -129,10 +130,7 @@ public class TaskController {
 	public ResponseEntity<?> deleteTask(@RequestHeader("Authorization") String authorizationHeader,
 			@PathVariable("id") Long id) {
 		try {
-			Optional<Task> taskToDelete = taskService.findById(id);
-			if (taskToDelete.isEmpty()) {
-				return new ResponseEntity<>("No existe tarea con el id enviado.", HttpStatus.BAD_REQUEST);
-			}
+
 			if (authorizationHeader.length() < 10) {
 				return new ResponseEntity<>("Debe enviar el token.", HttpStatus.UNAUTHORIZED);
 			}
@@ -144,7 +142,10 @@ public class TaskController {
 			if (user.isEmpty()) {
 				return new ResponseEntity<>("Usuario no encontrado", HttpStatus.UNAUTHORIZED);
 			}
-
+			Optional<Task> taskToDelete = taskService.findByIdName(id, user.get().getUsername());
+			if (taskToDelete.isEmpty()) {
+				return new ResponseEntity<>("No existe tarea con el id enviado.", HttpStatus.BAD_REQUEST);
+			}
 			taskService.delete(taskToDelete.get());
 			return new ResponseEntity<>("Tarea borrada.", HttpStatus.OK);
 

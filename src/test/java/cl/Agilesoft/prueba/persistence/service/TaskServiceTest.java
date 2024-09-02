@@ -16,8 +16,10 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import cl.Agilesoft.prueba.persistence.model.Task;
+import cl.Agilesoft.prueba.persistence.model.User;
 import cl.Agilesoft.prueba.persistence.repository.TaskRepo;
 
 @SpringBootTest
@@ -29,11 +31,23 @@ public class TaskServiceTest {
 	@InjectMocks
 	TaskService taskService;
 
+	@Mock
+	private PasswordEncoder passwordEncoder;
+
+	String nom = "aldo";
+	String pass = "1234";
+	String passEncryp = passwordEncoder.encode(pass);
+
 	private Task task;
+	private User user;
 
 	@BeforeEach
 	public void setUp() {
-		// Crear una tarea de ejemplo
+
+		user = new User();
+		user.setPassword(passEncryp);
+		user.setUsername(nom);
+
 		task = new Task();
 		task.setId(1L);
 		task.setName("Test Task");
@@ -41,6 +55,7 @@ public class TaskServiceTest {
 		task.setIsComplete(false);
 		task.setCreatedAt(new Date());
 		task.setLastModified(new Date());
+		task.setUser(user);
 	}
 
 	@Test
@@ -50,11 +65,11 @@ public class TaskServiceTest {
 		when(taskRepo.findById(1L)).thenReturn(Optional.of(task));
 		when(taskRepo.save(task)).thenReturn(task);
 
-		Task updatedTask = taskService.findById(1L).get();
+		Task updatedTask = taskService.findByIdName(1L, nom).get();
 		updatedTask.setIsComplete(true);
 		taskService.save(updatedTask);
 
-		assertTrue(taskService.findById(1L).get().getIsComplete());
+		assertTrue(taskService.findByIdName(1L, nom).get().getIsComplete());
 	}
 
 	@Test
@@ -64,7 +79,7 @@ public class TaskServiceTest {
 		when(taskRepo.findById(1L)).thenReturn(Optional.of(task));
 		when(taskRepo.save(task)).thenReturn(task);
 
-		Task updatedTask = taskService.findById(1L).get();
+		Task updatedTask = taskService.findByIdName(1L, nom).get();
 		updatedTask.setIsComplete(false);
 		Task result = taskService.save(updatedTask);
 
@@ -76,7 +91,7 @@ public class TaskServiceTest {
 		doNothing().when(taskRepo).deleteById(1L);
 
 		taskService.delete(task);
-		Optional<Task> deleteTask = taskService.findById(1L);
+		Optional<Task> deleteTask = taskService.findByIdName(1L, nom);
 		assertTrue(deleteTask.isEmpty());
 
 	}
