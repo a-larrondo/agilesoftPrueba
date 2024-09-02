@@ -4,9 +4,9 @@
 Desarrollar una API Rest para un sistema TODO List 
 
 ## Prerrequisitos
-Java 17
-Docker
-Docker-compose
+- Java 17
+- Docker
+- Docker-compose
 
 ## Configuración
 En el archivo application.properties están los campos de configuración los más relevantes son:
