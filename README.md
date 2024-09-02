@@ -29,36 +29,42 @@ En la carpeta de proyecto se deben realizar los siguientes pasos.
 
 ## Probar el api
 1. Crear usuario 
-```bash curl -X POST "http://localhost:9000/user/create" \
+```bash
+     curl -X POST "http://localhost:9000/user/create" \
      -H "Content-Type: application/json" \
      -d '{"username": "tu-usuario", "password": "tu-contraseña"}' 
 ```
 2. Login 
-```bash curl -X POST "http://localhost:9000/auth/login" \
+```bash
+     curl -X POST "http://localhost:9000/auth/login" \
      -H "Content-Type: application/json" \
      -d '{"username": "tu-usuario", "password": "tu-contraseña"}' 
 ```
   ### * Si la informacion esta correcta envia el Token. Este es necesario para las consultas siguientes:
 
 4. Obtener tareas 
-```bash curl -X GET "http://localhost:9000/task/getAllTasks" \
+```bash
+     curl -X GET "http://localhost:9000/task/getAllTasks" \
      -H "Authorization: Bearer {Token}" \
      -H "Content-Type: application/json" 
 ```
    
 6. Ingresar tarea nueva 
-```bash curl -X POST "http://localhost:9000/task" \
+```bash 
+     curl -X POST "http://localhost:9000/task" \
      -H "Authorization: Bearer {Token} " \
      -H "Content-Type: application/json" \
      -d '{"name": "New Task", "description": "This is a new task description."}'
 ```
 7.Cambiar estado de tarea a completado 
-```bash curl -X PUT "http://localhost:9000/task/complete/123" \
--H "Authorization: Bearer  {Token}" 
+```bash 
+     curl -X PUT "http://localhost:9000/task/complete/123" \
+     -H "Authorization: Bearer  {Token}" 
 ```
 8. Borrar tarea 
-```bash curl -X DELETE "http://localhost:9000/task/delete/123" \
- -H "Authorization: Bearer  {Token}" 
+```bash 
+     curl -X DELETE "http://localhost:9000/task/delete/123" \
+     -H "Authorization: Bearer  {Token}" 
 ```
 
    
