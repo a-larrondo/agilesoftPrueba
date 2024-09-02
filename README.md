@@ -51,20 +51,20 @@ En la carpeta de proyecto se deben realizar los siguientes pasos.
    
 6. Ingresar tarea nueva 
 ```bash 
-     curl -X POST "http://localhost:9000/task" \
+     curl -X POST "http://localhost:9000/task/createTask" \
      -H "Authorization: Bearer {Token} " \
      -H "Content-Type: application/json" \
      -d '{"name": "New Task", "description": "This is a new task description."}'
 ```
 7.Cambiar estado de tarea a completado 
 ```bash 
-     curl -X PUT "http://localhost:9000/task/complete/123" \
-     -H "Authorization: Bearer  {Token}" 
+      curl -X PUT "http://localhost:9000/task/complete/{idTask}" \
+     -H "Authorization: Bearer {Token}" 
 ```
 8. Borrar tarea 
 ```bash 
-     curl -X DELETE "http://localhost:9000/task/delete/123" \
-     -H "Authorization: Bearer  {Token}" 
+     curl -X DELETE "http://localhost:9000/task/delete/{idTask}" \
+     -H "Authorization: Bearer {Token}"
 ```
 
    
